@@ -4,12 +4,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import me.leolin.shortcutbadger.Badger;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.ShortcutBadger;
-
 import java.util.Arrays;
 import java.util.List;
+
+import me.leolin.shortcutbadger.Badger;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
+import me.leolin.shortcutbadger.util.BroadcastHelper;
 
 /**
  * @author Gernot Pansy
@@ -28,7 +28,11 @@ public class ApexHomeBadger implements Badger {
         intent.putExtra(PACKAGENAME, componentName.getPackageName());
         intent.putExtra(COUNT, badgeCount);
         intent.putExtra(CLASS, componentName.getClassName());
-        context.sendBroadcast(intent);
+        if (BroadcastHelper.canResolveBroadcast(context, intent)) {
+            context.sendBroadcast(intent);
+        } else {
+            throw new ShortcutBadgeException("unable to resolve intent: " + intent.toString());
+        }
     }
 
     @Override

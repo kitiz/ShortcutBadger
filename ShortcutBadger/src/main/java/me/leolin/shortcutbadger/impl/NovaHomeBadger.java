@@ -5,12 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
-import me.leolin.shortcutbadger.Badger;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.ShortcutBadger;
-
 import java.util.Arrays;
 import java.util.List;
+
+import me.leolin.shortcutbadger.Badger;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
 
 /**
  * Shortcut Badger support for Nova Launcher.
@@ -27,20 +26,10 @@ public class NovaHomeBadger implements Badger {
 
     @Override
     public void executeBadge(Context context, ComponentName componentName, int badgeCount) throws ShortcutBadgeException {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(TAG, componentName.getPackageName() + "/" + componentName.getClassName());
-            contentValues.put(COUNT, badgeCount);
-            context.getContentResolver().insert(Uri.parse(CONTENT_URI), contentValues);
-        } catch (IllegalArgumentException ex) {
-            /* Fine, TeslaUnread is not installed. */
-        } catch (Exception ex) {
-
-            /* Some other error, possibly because the format
-            of the ContentValues are incorrect. */
-
-            throw new ShortcutBadgeException(ex.getMessage());
-        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TAG, componentName.getPackageName() + "/" + componentName.getClassName());
+        contentValues.put(COUNT, badgeCount);
+        context.getContentResolver().insert(Uri.parse(CONTENT_URI), contentValues);
     }
 
     @Override

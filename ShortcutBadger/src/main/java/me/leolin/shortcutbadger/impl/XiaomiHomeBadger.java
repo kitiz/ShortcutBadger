@@ -4,13 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import me.leolin.shortcutbadger.Badger;
-import me.leolin.shortcutbadger.ShortcutBadgeException;
-import me.leolin.shortcutbadger.ShortcutBadger;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+
+import me.leolin.shortcutbadger.Badger;
+import me.leolin.shortcutbadger.ShortcutBadgeException;
+import me.leolin.shortcutbadger.util.BroadcastHelper;
 
 /**
  * @author leolin
@@ -34,7 +34,11 @@ public class XiaomiHomeBadger implements Badger {
                     INTENT_ACTION);
             localIntent.putExtra(EXTRA_UPDATE_APP_COMPONENT_NAME, componentName.getPackageName() + "/" + componentName.getClassName());
             localIntent.putExtra(EXTRA_UPDATE_APP_MSG_TEXT, String.valueOf(badgeCount == 0 ? "" : badgeCount));
-            context.sendBroadcast(localIntent);
+            if (BroadcastHelper.canResolveBroadcast(context, localIntent)) {
+                context.sendBroadcast(localIntent);
+            } else {
+                throw new ShortcutBadgeException("unable to resolve intent: " + localIntent.toString());
+            }
         }
     }
 
